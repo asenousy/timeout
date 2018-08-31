@@ -21,6 +21,7 @@ class App extends Component {
 
   handleAdd() {
     const {users, currentName} = this.state;
+    if (!currentName) return alert('please add valid name');
     this.setState({users: [...users, currentName], currentName: ''});
   }
 
@@ -37,7 +38,7 @@ class App extends Component {
 
       const foundUsers = users.map(name => {
         const user = usersList.find(user => user.name.toLowerCase() === name.toLowerCase());
-        if (!user) throw 'user does not exit';
+        if (!user) throw `user ${name}does not exit'`;
         return user;
       });
 
@@ -55,7 +56,7 @@ class App extends Component {
       const whiteList = venues.filter(venue => !blackList.find(blackVenue => blackVenue.name.toLowerCase() === venue.name.toLowerCase()));
       this.setState({whiteList, blackList});
     } catch (error) {
-      console.error(error);
+      alert(error);
     }
   }
 
