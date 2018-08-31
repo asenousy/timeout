@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
 
-function Names(props) {
-  return <ul>{props.users.map((name, i) => <li key={name + i}>{name}</li>)}</ul>;
-}
 
 class App extends Component {
   constructor(props) {
@@ -14,22 +11,25 @@ class App extends Component {
       whiteList: [],
       blackList: []
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.handleAdd = this.handleAdd.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleAdd() {
+  handleAdd = () => {
     const {users, currentName} = this.state;
     if (!currentName) return alert('please add valid name');
     this.setState({users: [...users, currentName], currentName: ''});
   }
 
-  handleChange(event) {
-    this.setState({currentName: event.target.value})
+  handleRemove = (index) => {
+    const newUsers = this.state.users.slice(); 
+    newUsers.splice(index, 1);
+    this.setState({users: newUsers});
   }
 
-  async handleSubmit(event) {
+  handleChange = (event) => {
+    this.setState({currentName: event.target.value});
+  }
+
+  handleSubmit = async (event) => {
     event.preventDefault();
     try {
       const {users} = this.state;
@@ -60,7 +60,7 @@ class App extends Component {
     }
   }
 
-  displayWhiteList() {
+  displayWhiteList = () => {
     return <div>
       <h3>Go To:</h3>
       <ul>
@@ -69,7 +69,7 @@ class App extends Component {
     </div>
   }
 
-  displayBlackList() {
+  displayBlackList = () => {
     return <div>
       <h3>Avoid:</h3>
       <ul>
@@ -85,6 +85,11 @@ class App extends Component {
     </div>
   }
 
+  names = () => {
+    const {users} = this.state;
+    return <ul>{users.map((name, i) => <li key={name + i}>{name} <input type="button" value="-" onClick={this.handleRemove.bind(this, i)} /></li>)}</ul>;
+  }
+
   render() {
     return (
       <div>
@@ -96,7 +101,7 @@ class App extends Component {
             <input type="text" value={this.state.currentName} onChange={this.handleChange} placeholder="who" />
             <input type="button" value="+" onClick={this.handleAdd} />
             <div className="pad-vertical">
-              <Names users={this.state.users}></Names>
+              {this.names()}
               <input type="submit" value="Submit" />
             </div>
           </form>
