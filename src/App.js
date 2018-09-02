@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import './App.css';
 
-function isEqual (str1, str2) {
+function isEqual(str1, str2) {
   return str1.trim().toLowerCase() === str2.trim().toLowerCase();
 }
 
@@ -17,25 +17,22 @@ class App extends Component {
   }
 
   handleAdd = () => {
-    const {users, currentName} = this.state;
-    if (!currentName) return alert('please add valid name');
-    this.setState({users: [...users, currentName], currentName: ''});
+    if (!this.state.currentName) return alert('please add valid name');
+    this.setState((prevState) => ({ users: [...prevState.users, prevState.currentName], currentName: '' }));
   }
 
   handleRemove = (index) => {
-    const newUsers = this.state.users.slice(); 
-    newUsers.splice(index, 1);
-    this.setState({users: newUsers});
+    return this.setState((prevState) => ({ users: prevState.users.slice().splice(index, 1) }));
   }
 
   handleChange = (event) => {
-    this.setState({currentName: event.target.value});
+    this.setState({ currentName: event.target.value });
   }
 
   handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const {users} = this.state;
+      const { users } = this.state;
       const venues = await (await fetch('/venues.json')).json();
       const usersList = await (await fetch('/users.json')).json();
 
@@ -45,19 +42,19 @@ class App extends Component {
         return user;
       });
 
-      const blackList = venues.reduce((blackList, {name: venueName, food, drinks: venueDrinks}) => {
-        const blackUsers = foundUsers.reduce((list, {name: userName, wont_eat, drinks: UserDrinks}) => {
+      const blackList = venues.reduce((blackList, { name: venueName, food, drinks: venueDrinks }) => {
+        const blackUsers = foundUsers.reduce((list, { name: userName, wont_eat, drinks: UserDrinks }) => {
           const noFood = food.every(food => wont_eat.find(eat => isEqual(eat, food)));
           const noDrink = !venueDrinks.some(drink => UserDrinks.find(userDrink => isEqual(userDrink, drink)));
-          if (noFood || noDrink) list.push({name: userName, noFood, noDrink});
+          if (noFood || noDrink) list.push({ name: userName, noFood, noDrink });
           return list;
         }, []);
-        blackUsers.length && blackList.push({name: venueName, users: blackUsers});
+        blackUsers.length && blackList.push({ name: venueName, users: blackUsers });
         return blackList;
       }, []);
 
       const whiteList = venues.filter(venue => !blackList.find(blackVenue => isEqual(blackVenue.name, venue.name)));
-      this.setState({whiteList, blackList});
+      this.setState({ whiteList, blackList });
     } catch (error) {
       alert(error);
     }
@@ -89,7 +86,7 @@ class App extends Component {
   }
 
   names = () => {
-    const {users} = this.state;
+    const { users } = this.state;
     return <ul>{users.map((name, i) => <li key={name + i}>{name} <input type="button" value="-" onClick={this.handleRemove.bind(this, i)} /></li>)}</ul>;
   }
 
