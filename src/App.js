@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import './App.css';
 
+function isEqual (str1, str2) {
+  return str1.trim().toLowerCase() === str2.trim().toLowerCase();
+}
 
 class App extends Component {
   constructor(props) {
@@ -37,15 +40,15 @@ class App extends Component {
       const usersList = await (await fetch('/users.json')).json();
 
       const foundUsers = users.map(name => {
-        const user = usersList.find(user => user.name.toLowerCase() === name.toLowerCase());
+        const user = usersList.find(user => isEqual(user.name, name));
         if (!user) throw `user ${name}does not exit'`;
         return user;
       });
 
       const blackList = venues.reduce((blackList, {name: venueName, food, drinks: venueDrinks}) => {
         const blackUsers = foundUsers.reduce((list, {name: userName, wont_eat, drinks: UserDrinks}) => {
-          const noFood = food.every(food => wont_eat.find(eat => eat.toLowerCase() === food.toLowerCase()));
-          const noDrink = !venueDrinks.some(drink => UserDrinks.find(userDrink => userDrink.toLowerCase() === drink.toLowerCase()));
+          const noFood = food.every(food => wont_eat.find(eat => isEqual(eat, food)));
+          const noDrink = !venueDrinks.some(drink => UserDrinks.find(userDrink => isEqual(userDrink, drink)));
           if (noFood || noDrink) list.push({name: userName, noFood, noDrink});
           return list;
         }, []);
@@ -53,7 +56,7 @@ class App extends Component {
         return blackList;
       }, []);
 
-      const whiteList = venues.filter(venue => !blackList.find(blackVenue => blackVenue.name.toLowerCase() === venue.name.toLowerCase()));
+      const whiteList = venues.filter(venue => !blackList.find(blackVenue => isEqual(blackVenue.name, venue.name)));
       this.setState({whiteList, blackList});
     } catch (error) {
       alert(error);
