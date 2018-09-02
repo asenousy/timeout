@@ -25,8 +25,8 @@ class App extends Component {
     return this.setState((prevState) => ({ users: prevState.users.slice().splice(index, 1) }));
   }
 
-  handleChange = (event) => {
-    this.setState({ currentName: event.target.value });
+  handleChange = ({ target: { value } }) => {
+    this.setState({ currentName: value });
   }
 
   handleSubmit = async (event) => {
