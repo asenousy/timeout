@@ -19,7 +19,11 @@ class App extends Component {
   }
 
   handleRemove = (index) => {
-    return this.setState((prevState) => ({ users: prevState.users.slice().splice(index, 1) }));
+    this.setState((prevState) => {
+      const newUsers = prevState.users.slice();
+      newUsers.splice(index, 1);
+      return {users: newUsers}
+      });
   }
 
   handleChange = ({ target: { value } }) => {
