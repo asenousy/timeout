@@ -1,8 +1,10 @@
 ## Time to Eat
 
-to run just npm install and npm start
+to run:
+- `npm install`
+- `npm test`
+- `npm start`
 
-## Improvements
-- add option to remove user
-- add unit tests
+## Improvements if I had more time
+- better UI
 - optimise the algorithm
